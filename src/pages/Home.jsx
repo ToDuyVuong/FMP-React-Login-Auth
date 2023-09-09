@@ -36,9 +36,9 @@ const Home = () => {
       console.log("responseRefresh: ", responseRefresh);
       if (responseRefresh.code === 0) {
         const responseCallApi = await callAPITest(responseRefresh.data.token);
+        setMessage(responseCallApi.message);
         console.log("responseCallApi: ", responseCallApi);
         setIsLoading(false);
-        setMessage(responseCallApi.message);
       } else {
         dispatch(logoutSuccess());
       }

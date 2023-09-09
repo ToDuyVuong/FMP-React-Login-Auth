@@ -13,10 +13,11 @@ function App() {
   const handleBeforeUnload = async () => {
     setTimeout(async () => {
       const response = await refreshToken();
+      console.log("response: ", response);
       if (!response.code === 0) {
         dispatch(logoutSuccess());
       }
-    }, 500);
+    }, 1000);
   };
 
   useEffect(() => {

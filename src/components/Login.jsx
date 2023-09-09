@@ -1,11 +1,12 @@
 import Header from "./Header";
 import { useAuthentication } from "../hook/useAuthentication";
 import Home from "../pages/Home";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLoginMutation } from "../redux/slices/userSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { loginSuccess } from "../redux/reducers/authReducer";
+import { loginSuccess, setMessage } from "../redux/reducers/authReducer";
+import { useSetMessage } from "../hook/useSetMessage";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -15,8 +16,23 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useAuthentication();
+  const setMessageRegister = useSetMessage();
 
   const [login, { isLoading }] = useLoginMutation();
+
+  if (isAuthenticated) {
+    navigate("/");
+  }
+
+  useEffect(() => {
+    if (setMessageRegister) {
+      dispatch(setMessage(""));
+      setEr(setMessageRegister);
+      setTimeout(() => {
+        setEr("");
+      }, 10000);
+    }
+  }, [setMessageRegister]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

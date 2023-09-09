@@ -4,6 +4,7 @@ const initialState = {
   isAuthenticated: false,
   token: "",
   user: null,
+  message: "",
 };
 
 const authReducer = createSlice({
@@ -23,9 +24,17 @@ const authReducer = createSlice({
     refreshAccessTokenSuccess: (state, action) => {
       state.token = action.payload.data.token;
     },
+
+    setMessage: (state, action) => {
+      state.message = action.payload;
+    },
   },
 });
 
-export const { loginSuccess, logoutSuccess, refreshAccessTokenSuccess } =
-  authReducer.actions;
+export const {
+  loginSuccess,
+  logoutSuccess,
+  refreshAccessTokenSuccess,
+  setMessage,
+} = authReducer.actions;
 export default authReducer.reducer;

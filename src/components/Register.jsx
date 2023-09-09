@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useRegisterMutation } from "../redux/slices/userSlice";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setMessage } from "../redux/reducers/authReducer";
 
 const Register = () => {
   const isAuthenticated = useAuthentication();
@@ -17,15 +19,19 @@ const Register = () => {
   const [passwordsMatch, setPasswordsMatch] = useState(true);
   const [isConfirm, setIsConfirm] = useState(false);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const [register, { isLoading }] = useRegisterMutation();
+
+  if (isAuthenticated) {
+    navigate("/");
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const response = await register({ email, fullName, password }).unwrap();
       console.log(response);
+      dispatch(setMessage(response.message));
       navigate("/login");
     } catch (error) {
       console.log(error);
