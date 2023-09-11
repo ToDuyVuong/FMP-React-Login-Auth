@@ -57,9 +57,11 @@ const Home = () => {
       const response = await logout(token).unwrap();
       // console.log("logout: ", response);
       dispatch(logoutSuccess());
+      navigate("/login");
     } catch (error) {
       dispatch(logoutSuccess());
       // console.log("logout: ", error);
+      navigate("/login");
     }
   };
 
