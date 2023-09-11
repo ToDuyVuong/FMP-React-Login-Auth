@@ -27,18 +27,20 @@ const Home = () => {
     setIsLoading(true);
     setMessage("");
     const response = await callAPITest(token);
-    console.log("response: ", response);
+    // console.log("response: ", response);
     if (response.code === 200) {
       setIsLoading(false);
       setMessage(response.message);
     } else {
       const responseRefresh = await refreshAccessToken();
-      console.log("responseRefresh: ", responseRefresh);
+      // console.log("responseRefresh: ", responseRefresh);
       if (responseRefresh.code === 0) {
-        const responseCallApi = await callAPITest(responseRefresh.data.token);
-        setMessage(responseCallApi.message);
-        console.log("responseCallApi: ", responseCallApi);
-        setIsLoading(false);
+        setTimeout(async () => {
+          const responseCallApi = await callAPITest(responseRefresh.data.token);
+          setMessage(responseCallApi.message);
+          // console.log("responseCallApi: ", responseCallApi);
+          setIsLoading(false);
+        }, 800);
       } else {
         dispatch(logoutSuccess());
       }
@@ -51,19 +53,20 @@ const Home = () => {
     setIsLoading(true);
 
     try {
+      // eslint-disable-next-line no-unused-vars
       const response = await logout(token).unwrap();
-      console.log("logout: ", response);
+      // console.log("logout: ", response);
       dispatch(logoutSuccess());
     } catch (error) {
       dispatch(logoutSuccess());
-      console.log("logout: ", error);
+      // console.log("logout: ", error);
     }
   };
 
   return (
     <>
       <Header />
-      <h1 className="text-4xl text-center font-bold m-6">Home</h1>
+      <h1 className="text-4xl text-center font-bold m-6">Trang Chủ</h1>
       {isAuthenticated ? (
         <>
           {dataUser && (
@@ -75,7 +78,7 @@ const Home = () => {
               disabled={isLoading}
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow-lg"
             >
-              Call API
+              Gọi API
             </button>
           </div>
           <div className="flex justify-center mt-8">
@@ -92,13 +95,13 @@ const Home = () => {
               disabled={isLoandingLogout}
               className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded shadow-lg"
             >
-              Logout
+              Đăng Xuất
             </button>
           </div>
         </>
       ) : (
         <div className="fixed text-center bottom-0 left-0 right-0 bg-gray-800 text-white p-4">
-          <p>You are not authenticated. Please log in or register.</p>
+          <p>Bạn chưa được xác thực. Vui lòng đăng nhập hoặc đăng ký.</p>
         </div>
       )}
     </>

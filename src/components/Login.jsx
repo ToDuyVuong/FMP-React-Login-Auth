@@ -7,16 +7,19 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess, setMessage } from "../redux/reducers/authReducer";
 import { useSetMessage } from "../hook/useSetMessage";
+import { useEmailRegister } from "../hook/useEmailRegister";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [er, setEr] = useState("");
+  const [messageRegisterSuccess, setMessageRegisterSuccess] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useAuthentication();
   const setMessageRegister = useSetMessage();
+  const emailRigister = useEmailRegister()
 
   const [login, { isLoading }] = useLoginMutation();
 
@@ -27,9 +30,10 @@ const Login = () => {
   useEffect(() => {
     if (setMessageRegister) {
       dispatch(setMessage(""));
-      setEr(setMessageRegister);
+      setMessageRegisterSuccess(setMessageRegister);
+      setEmail(emailRigister);
       setTimeout(() => {
-        setEr("");
+        setMessageRegisterSuccess("");
       }, 10000);
     }
   }, [setMessageRegister]);
@@ -42,8 +46,8 @@ const Login = () => {
       dispatch(loginSuccess(response));
       navigate("/");
     } catch (error) {
-      console.log(error);
-      console.log(error.data.message);
+      // console.log(error);
+      // console.log(error.data.message);
       setEr(error.data.message);
       setTimeout(() => {
         setEr("");
@@ -59,8 +63,14 @@ const Login = () => {
       <div className="container flex mx-auto items-center justify-center min-h-screen">
         <div className="w-80 bg-slate-200 shadow-md rounded-lg p-4">
           <h1 className="text-4xl font-bold text-sky-500 mb-4 text-center">
-            Login
+            Đăng Nhập
           </h1>
+
+          {messageRegisterSuccess && (
+            <h3 className="mb-4 text-green-500 text-center">
+              {messageRegisterSuccess}
+            </h3>
+          )}
 
           {er && <h3 className="mb-4 text-red-500 text-center">{er}</h3>}
 
@@ -71,7 +81,7 @@ const Login = () => {
             <input
               id="email"
               type="email"
-              placeholder="Email"
+              placeholder="Nhập email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -80,12 +90,12 @@ const Login = () => {
             />
 
             <label htmlFor="password" className="text-gray-800 mt-2">
-              Password:
+              Mật Khẩu:
             </label>
             <input
               id="password"
               type="password"
-              placeholder="Password"
+              placeholder="Nhập mật khẩu"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -104,13 +114,13 @@ const Login = () => {
                       : "hover:scale-105 hover:bg-yellow-500 hover:text-black"
                   }`}
               >
-                Login
+                Đăng Nhập
               </button>
             </div>
             <p className="mt-2 text-gray-600 text-center">
-              Don&apos;t have an account?{" "}
+              Bạn chưa có tài khoản?{" "}
               <Link to="/register" className="text-blue-500">
-                Register
+                Đăng Ký
               </Link>
             </p>
           </form>

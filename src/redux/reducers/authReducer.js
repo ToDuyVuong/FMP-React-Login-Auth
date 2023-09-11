@@ -5,6 +5,7 @@ const initialState = {
   token: "",
   user: null,
   message: "",
+  email: "",
 };
 
 const authReducer = createSlice({
@@ -26,7 +27,8 @@ const authReducer = createSlice({
     },
 
     setMessage: (state, action) => {
-      state.message = action.payload;
+      state.message = action.payload.message;
+      state.email = action.payload.data.email;
     },
   },
 });

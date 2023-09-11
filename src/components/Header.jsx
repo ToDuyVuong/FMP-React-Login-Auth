@@ -8,7 +8,7 @@ const Header = () => {
     <nav className="bg-emerald-500 p-4">
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-black font-semibold text-lg">
-          Home
+          Trang Chủ
         </Link>
         {!isAuthenticated && (
           <ul className="flex space-x-4">
@@ -18,7 +18,7 @@ const Header = () => {
                   to="/login"
                   className="text-black font-bold hover:text-red-500  transition-colors duration-200 "
                 >
-                  Login
+                  Đăng Nhập
                 </Link>
               </li>
               <li>
@@ -26,7 +26,7 @@ const Header = () => {
                   to="/register"
                   className="text-black font-bold hover:text-red-500  transition-colors duration-200 "
                 >
-                  Register
+                  Đăng Ký
                 </Link>
               </li>
             </>

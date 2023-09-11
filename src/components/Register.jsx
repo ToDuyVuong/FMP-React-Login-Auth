@@ -30,11 +30,11 @@ const Register = () => {
     e.preventDefault();
     try {
       const response = await register({ email, fullName, password }).unwrap();
-      console.log(response);
-      dispatch(setMessage(response.message));
+      // console.log(response);
+      dispatch(setMessage(response));
       navigate("/login");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       setEr(error.data.message);
       setTimeout(() => {
         setEr("");
@@ -59,7 +59,7 @@ const Register = () => {
       <div className="container flex mx-auto items-center justify-center min-h-screen">
         <div className="w-80 bg-slate-200 shadow-md rounded-lg p-4">
           <h1 className="text-4xl font-bold text-sky-500 mb-4 text-center">
-            Register
+            Đăng Ký
           </h1>
 
           {er && <h3 className="mb-4 text-center text-red-500">{er}</h3>}
@@ -71,7 +71,7 @@ const Register = () => {
             <input
               id="email"
               type="email"
-              placeholder="Email"
+              placeholder="Nhập email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -80,12 +80,12 @@ const Register = () => {
             />
 
             <label htmlFor="fullName" className="text-gray-800 mt-2">
-              Full Name:
+              Họ và Tên:
             </label>
             <input
               id="fullName"
               type="text"
-              placeholder="Full Name"
+              placeholder="Nhập họ và tên"
               required
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
@@ -94,12 +94,12 @@ const Register = () => {
             />
 
             <label htmlFor="password" className="text-gray-800 mt-2">
-              Password:
+              Mật Khẩu:
             </label>
             <input
               id="password"
               type="password"
-              placeholder="Password"
+              placeholder="Nhập mật khẩu"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -112,12 +112,13 @@ const Register = () => {
               className={`text-gray-800 mt-2
                ${!passwordsMatch ? "text-red-500" : ""}`}
             >
-              Confirm Password: {passwordsMatch ? "" : "Passwords do not match"}
+              Xác nhận mật khẩu:{" "}
+              {passwordsMatch ? "" : "Chưa đúng"}
             </label>
             <input
               id="confirm-password"
               type="password"
-              placeholder="Confirm Password"
+              placeholder="Nhập xác nhận mật khẩu"
               required
               value={confirm}
               onChange={(e) => setComfirm(e.target.value)}
@@ -137,13 +138,13 @@ const Register = () => {
                       : "hover:scale-105 hover:bg-yellow-500 hover:text-black"
                   }`}
               >
-                Register
+                Đăng Ký
               </button>
             </div>
             <p className="mt-2 text-gray-600 text-center">
-              Do you already have an account?{" "}
+              Bạn đã có tài khoản?{" "}
               <Link to="/login" className="text-blue-500 ">
-                Login
+                Đăng Nhập
               </Link>
             </p>
           </form>
