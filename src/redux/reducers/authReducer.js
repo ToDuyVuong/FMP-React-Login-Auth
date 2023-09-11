@@ -28,7 +28,7 @@ const authReducer = createSlice({
 
     setMessage: (state, action) => {
       state.message = action.payload.message;
-      state.email = action.payload.data.email;
+      state.email = action.payload.email;
     },
   },
 });

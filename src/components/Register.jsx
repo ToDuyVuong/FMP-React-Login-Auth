@@ -30,11 +30,20 @@ const Register = () => {
     e.preventDefault();
     try {
       const response = await register({ email, fullName, password }).unwrap();
-      // console.log(response);
-      dispatch(setMessage(response));
+      console.log(response);
+      console.log("response", response.data.email);
+
+      dispatch(
+        setMessage({
+          message: response.message,
+          email: response.data.email,
+        })
+      );
+
+
       navigate("/login");
     } catch (error) {
-      // console.log(error);
+      console.log(error);
       setEr(error.data.message);
       setTimeout(() => {
         setEr("");

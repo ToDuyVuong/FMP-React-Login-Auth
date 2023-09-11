@@ -19,7 +19,7 @@ const Login = () => {
   const navigate = useNavigate();
   const isAuthenticated = useAuthentication();
   const setMessageRegister = useSetMessage();
-  const emailRigister = useEmailRegister()
+  const emailRigister = useEmailRegister();
 
   const [login, { isLoading }] = useLoginMutation();
 
@@ -31,7 +31,9 @@ const Login = () => {
     if (setMessageRegister) {
       dispatch(setMessage(""));
       setMessageRegisterSuccess(setMessageRegister);
-      setEmail(emailRigister);
+      if (emailRigister) {
+        setEmail(emailRigister);
+      }
       setTimeout(() => {
         setMessageRegisterSuccess("");
       }, 10000);
@@ -46,8 +48,8 @@ const Login = () => {
       dispatch(loginSuccess(response));
       navigate("/");
     } catch (error) {
-      // console.log(error);
-      // console.log(error.data.message);
+      console.log(error);
+      console.log(error.data.message);
       setEr(error.data.message);
       setTimeout(() => {
         setEr("");
