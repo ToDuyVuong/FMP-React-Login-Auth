@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Header from "./Header";
 import { useAuthentication } from "../hook/useAuthentication";
 import Home from "../pages/Home";
@@ -8,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { loginSuccess, setMessage } from "../redux/reducers/authReducer";
 import { useSetMessage } from "../hook/useSetMessage";
 import { useEmailRegister } from "../hook/useEmailRegister";
+import Modal from "./Modal";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -22,6 +24,37 @@ const Login = () => {
   const emailRigister = useEmailRegister();
 
   const [login, { isLoading }] = useLoginMutation();
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState({
+    title: "",
+    content: "",
+  });
+
+  const openModal = (title, content) => {
+    setModalContent({ title, content });
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const showErrorMessage = (message) => {
+    setEr(message);
+    setTimeout(() => {
+      setEr("");
+    }, 5000);
+    openModal("Lỗi Đăng Nhập", message);
+  };
+
+  const showRegisterMessage = (message) => {
+    setMessageRegisterSuccess(setMessageRegister);
+
+    setTimeout(() => {
+      setMessageRegisterSuccess(setMessageRegister);
+    }, 5000);
+    openModal("Đăng Ký", message);
+  };
 
   if (isAuthenticated) {
     navigate("/");
@@ -30,13 +63,10 @@ const Login = () => {
   useEffect(() => {
     if (setMessageRegister) {
       dispatch(setMessage(""));
-      setMessageRegisterSuccess(setMessageRegister);
+      showRegisterMessage(setMessageRegister);
       if (emailRigister) {
         setEmail(emailRigister);
       }
-      setTimeout(() => {
-        setMessageRegisterSuccess("");
-      }, 10000);
     }
   }, [setMessageRegister]);
 
@@ -50,10 +80,11 @@ const Login = () => {
     } catch (error) {
       console.log(error);
       console.log(error.data.message);
-      setEr(error.data.message);
-      setTimeout(() => {
-        setEr("");
-      }, 5000);
+      // setEr(error.data.message);
+      // setTimeout(() => {
+      //   setEr("");
+      // }, 5000);
+      showErrorMessage(error.data.message);
     }
   };
 
@@ -75,6 +106,14 @@ const Login = () => {
           )}
 
           {er && <h3 className="mb-4 text-red-500 text-center">{er}</h3>}
+
+          <Modal
+            isOpen={showModal}
+            onClose={closeModal}
+            title={modalContent.title}
+            content={modalContent.content}
+            autoCloseTime={5000} // Thời gian tự động đóng sau 5 giây (5000 miligiây)
+          />
 
           <form className="flex flex-col" onSubmit={handleSubmit}>
             <label htmlFor="email" className="text-gray-800 mt-2">
@@ -108,6 +147,7 @@ const Login = () => {
             <div className="flex justify-center">
               <button
                 type="submit"
+                disabled={isLoading}
                 className={`w-40 h-10 p-2 my-2 font-bold text-white bg-blue-500 border rounded-md
                  border-blue-500 transition duration-300 ease-in-out transform
                   ${

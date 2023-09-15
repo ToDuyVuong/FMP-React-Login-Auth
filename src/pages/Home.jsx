@@ -35,16 +35,14 @@ const Home = () => {
       const responseRefresh = await refreshAccessToken();
       // console.log("responseRefresh: ", responseRefresh);
       if (responseRefresh.code === 0) {
-        setTimeout(async () => {
-          const responseCallApi = await callAPITest(responseRefresh.data.token);
-          setMessage(responseCallApi.message);
-          // console.log("responseCallApi: ", responseCallApi);
-          setIsLoading(false);
-        }, 800);
+        const responseCallApi = await callAPITest(responseRefresh.data.token);
+        setMessage(responseCallApi.message);
+        // console.log("responseCallApi: ", responseCallApi, "----", callMessage);
+        setIsLoading(false);
       } else {
         dispatch(logoutSuccess());
+        navigate("/login");
       }
-      navigate("/login");
     }
   };
 
@@ -77,7 +75,7 @@ const Home = () => {
           <div className="flex justify-center mt-8">
             <button
               onClick={handleCallApi}
-              disabled={isLoading}
+              disabled={isLoading || isLoandingLogout}
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow-lg"
             >
               Gọi API
@@ -94,7 +92,7 @@ const Home = () => {
           <div className="fixed  flex justify-center items-center bottom-0 left-0 right-0 bg-gray-800 text-white p-4">
             <button
               onClick={handleLogout}
-              disabled={isLoandingLogout}
+              disabled={isLoandingLogout || isLoading}
               className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded shadow-lg"
             >
               Đăng Xuất
