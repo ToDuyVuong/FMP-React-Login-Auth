@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useDataUser } from "./../hook/useDataUser";
 import { useCallAPITest } from "../hook/useCallAPITest";
 import { useRefreshToken } from "../hook/useRefreshToken";
+import { useEffect } from "react";
 
 const Home = () => {
   const isAuthenticated = useAuthentication();
@@ -21,6 +22,25 @@ const Home = () => {
   const callAPITest = useCallAPITest();
   const refreshAccessToken = useRefreshToken();
   const [isLoading, setIsLoading] = useState(false);
+
+  const refreshToken = useRefreshToken();
+
+  const handleBeforeUnload = async () => {
+    setIsLoading(true);
+    setTimeout(async () => {
+      const response = await refreshToken();
+      console.log("response: ", response);
+      if (!response.code === 0) {
+        setIsLoading(false);
+        dispatch(logoutSuccess());
+      }
+    }, 1000);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) handleBeforeUnload();
+  }, []);
 
   const handleCallApi = async (e) => {
     e.preventDefault();
