@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Header from "./Header";
 import { useAuthentication } from "../hook/useAuthentication";
-import Home from "../pages/Home";
+// import Home from "../pages/Home";
 import { useEffect, useState } from "react";
 import { useLoginMutation } from "../redux/slices/userSlice";
 import { useNavigate, Link } from "react-router-dom";
@@ -56,9 +56,11 @@ const Login = () => {
     openModal("Đăng Ký", message);
   };
 
-  if (isAuthenticated) {
-    navigate("/");
-  }
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, []);
 
   useEffect(() => {
     if (setMessageRegister) {
@@ -68,7 +70,7 @@ const Login = () => {
         setEmail(emailRigister);
       }
     }
-  }, [setMessageRegister]);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -76,20 +78,38 @@ const Login = () => {
     try {
       const response = await login({ email, password }).unwrap();
       dispatch(loginSuccess(response));
+
+      dispatch(
+        setMessage({
+          message: "Đăng nhập thành công.",
+          email: response.data.email,
+        })
+      );
+
+      console.log(response);
+
       navigate("/");
     } catch (error) {
       console.log(error);
       console.log(error.data.message);
-      // setEr(error.data.message);
-      // setTimeout(() => {
-      //   setEr("");
-      // }, 5000);
-      showErrorMessage(error.data.message);
+
+      if (error.status === "FETCH_ERROR") {
+        showErrorMessage("Máy chủ quá tải.");
+      } else {
+        showErrorMessage(error.data.message);
+      }
     }
   };
 
   return isAuthenticated ? (
-    <Home />
+    <>
+      <p className="mt-2 text-gray-600 text-center">
+        Bạn đã đăng nhập!{" "}
+        <Link to="/register" className="text-blue-500">
+          Quay lại trang chủ.
+        </Link>
+      </p>
+    </>
   ) : (
     <>
       <Header />

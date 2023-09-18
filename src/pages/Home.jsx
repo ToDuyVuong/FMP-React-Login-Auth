@@ -4,17 +4,20 @@ import { useLogoutMutation } from "../redux/slices/userSlice";
 import { useToken } from "../hook/useToken";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { logoutSuccess } from "../redux/reducers/authReducer";
+import { logoutSuccess, setMessage } from "../redux/reducers/authReducer";
+
 import { useNavigate } from "react-router-dom";
 import { useDataUser } from "./../hook/useDataUser";
 import { useCallAPITest } from "../hook/useCallAPITest";
 import { useRefreshToken } from "../hook/useRefreshToken";
 import { useEffect } from "react";
+import { useSetMessage } from "./../hook/useSetMessage";
+import Modal from "../components/Modal";
 
 const Home = () => {
   const isAuthenticated = useAuthentication();
   const token = useToken();
-  const [message, setMessage] = useState("");
+  const [messageHome, setMessageHome] = useState("");
   const [logout, { isLoading: isLoandingLogout }] = useLogoutMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,13 +25,34 @@ const Home = () => {
   const callAPITest = useCallAPITest();
   const refreshAccessToken = useRefreshToken();
   const [isLoading, setIsLoading] = useState(false);
+  const loginMessage = useSetMessage();
 
   const refreshToken = useRefreshToken();
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState({
+    title: "",
+    content: "",
+  });
+
+  const openModal = (title, content) => {
+    setModalContent({ title, content });
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const showLoginMessage = (message) => {
+    openModal("Đăng Nhập", message);
+  };
 
   const handleBeforeUnload = async () => {
     setIsLoading(true);
     setTimeout(async () => {
       const response = await refreshToken();
+      console.log("aa2: ", loginMessage);
+
       console.log("response: ", response);
       if (!response.code === 0) {
         setIsLoading(false);
@@ -39,24 +63,31 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (isAuthenticated) handleBeforeUnload();
+    if (isAuthenticated) {
+      if (loginMessage) {
+        showLoginMessage(loginMessage);
+        dispatch(setMessage(""));   
+      } else {
+        handleBeforeUnload();
+      }
+    }
   }, []);
 
   const handleCallApi = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setMessage("");
+    setMessageHome("");
     const response = await callAPITest(token);
     // console.log("response: ", response);
     if (response.code === 200) {
       setIsLoading(false);
-      setMessage(response.message);
+      setMessageHome(response.message);
     } else {
       const responseRefresh = await refreshAccessToken();
       // console.log("responseRefresh: ", responseRefresh);
       if (responseRefresh.code === 0) {
         const responseCallApi = await callAPITest(responseRefresh.data.token);
-        setMessage(responseCallApi.message);
+        setMessageHome(responseCallApi.message);
         // console.log("responseCallApi: ", responseCallApi, "----", callMessage);
         setIsLoading(false);
       } else {
@@ -86,6 +117,14 @@ const Home = () => {
   return (
     <>
       <Header />
+
+      <Modal
+        isOpen={showModal}
+        onClose={closeModal}
+        title={modalContent.title}
+        content={modalContent.content}
+        autoCloseTime={5000} // Thời gian tự động đóng sau 5 giây (5000 miligiây)
+      />
       <h1 className="text-4xl text-center font-bold m-6">Trang Chủ</h1>
       {isAuthenticated ? (
         <>
@@ -102,9 +141,9 @@ const Home = () => {
             </button>
           </div>
           <div className="flex justify-center mt-8">
-            {message && (
+            {messageHome && (
               <h1 className="mb-4 text-3xl font-bold text-stone-950 text-center">
-                {message}
+                {messageHome}
               </h1>
             )}
           </div>

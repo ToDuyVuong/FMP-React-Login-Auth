@@ -47,7 +47,11 @@ const Register = () => {
       navigate("/login");
     } catch (error) {
       console.log(error);
-      showErrorMessage(error.data.message);
+      if (error.status === "FETCH_ERROR") {
+        showErrorMessage("Máy chủ quá tải.");
+      } else {
+        showErrorMessage(error.data.message);
+      }
     }
   };
 
@@ -77,116 +81,121 @@ const Register = () => {
     openModal("Lỗi Đăng Ký", message);
   };
 
-  return (
-    !isAuthenticated && (
-      <>
-        <Header />
+  return isAuthenticated ? (
+    <>
+      <p className="mt-2 text-gray-600 text-center">
+        Bạn đã đăng nhập!{" "}
+        <Link to="/register" className="text-blue-500">
+          Quay lại trang chủ.
+        </Link>
+      </p>
+    </>
+  ) : (
+    <>
+      <Header />
 
-        <div className="container flex mx-auto items-center justify-center min-h-screen">
-          <div className="w-80 bg-slate-200 shadow-md rounded-lg p-4">
-            <h1 className="text-4xl font-bold text-sky-500 mb-4 text-center">
-              Đăng Ký
-            </h1>
+      <div className="container flex mx-auto items-center justify-center min-h-screen">
+        <div className="w-80 bg-slate-200 shadow-md rounded-lg p-4">
+          <h1 className="text-4xl font-bold text-sky-500 mb-4 text-center">
+            Đăng Ký
+          </h1>
 
-            {er && (
-              <h3 className="mb-4 text-center text-red-500">===== {er}</h3>
-            )}
+          {er && <h3 className="mb-4 text-center text-red-500">===== {er}</h3>}
 
-            <Modal
-              isOpen={showModal}
-              onClose={closeModal}
-              title={modalContent.title}
-              content={modalContent.content}
-              autoCloseTime={5000} // Thời gian tự động đóng sau 5 giây (5000 miligiây)
+          <Modal
+            isOpen={showModal}
+            onClose={closeModal}
+            title={modalContent.title}
+            content={modalContent.content}
+            autoCloseTime={5000} // Thời gian tự động đóng sau 5 giây (5000 miligiây)
+          />
+
+          <form className="flex flex-col" onSubmit={handleSubmit}>
+            <label htmlFor="email" className="text-gray-800 mt-2">
+              Email:
+            </label>
+            <input
+              id="email"
+              type="email"
+              placeholder="Nhập email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full h-10 p-2 my-2 bg-white border rounded-md border-gray-300
+        focus:border-green-500 focus:outline-none transition duration-300 ease-in-out"
             />
 
-            <form className="flex flex-col" onSubmit={handleSubmit}>
-              <label htmlFor="email" className="text-gray-800 mt-2">
-                Email:
-              </label>
-              <input
-                id="email"
-                type="email"
-                placeholder="Nhập email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-10 p-2 my-2 bg-white border rounded-md border-gray-300
+            <label htmlFor="fullName" className="text-gray-800 mt-2">
+              Họ và Tên:
+            </label>
+            <input
+              id="fullName"
+              type="text"
+              placeholder="Nhập họ và tên"
+              required
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="w-full h-10 p-2 my-2 bg-white border rounded-md border-gray-300
         focus:border-green-500 focus:outline-none transition duration-300 ease-in-out"
-              />
+            />
 
-              <label htmlFor="fullName" className="text-gray-800 mt-2">
-                Họ và Tên:
-              </label>
-              <input
-                id="fullName"
-                type="text"
-                placeholder="Nhập họ và tên"
-                required
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="w-full h-10 p-2 my-2 bg-white border rounded-md border-gray-300
+            <label htmlFor="password" className="text-gray-800 mt-2">
+              Mật Khẩu:
+            </label>
+            <input
+              id="password"
+              type="password"
+              placeholder="Nhập mật khẩu"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full h-10 p-2 my-2 bg-white border rounded-md border-gray-300
         focus:border-green-500 focus:outline-none transition duration-300 ease-in-out"
-              />
+            />
 
-              <label htmlFor="password" className="text-gray-800 mt-2">
-                Mật Khẩu:
-              </label>
-              <input
-                id="password"
-                type="password"
-                placeholder="Nhập mật khẩu"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-10 p-2 my-2 bg-white border rounded-md border-gray-300
-        focus:border-green-500 focus:outline-none transition duration-300 ease-in-out"
-              />
-
-              <label
-                htmlFor="confirm-password"
-                className={`text-gray-800 mt-2
+            <label
+              htmlFor="confirm-password"
+              className={`text-gray-800 mt-2
                ${!passwordsMatch ? "text-red-500" : ""}`}
-              >
-                Xác nhận mật khẩu: {passwordsMatch ? "" : "Chưa đúng"}
-              </label>
-              <input
-                id="confirm-password"
-                type="password"
-                placeholder="Nhập xác nhận mật khẩu"
-                required
-                value={confirm}
-                onChange={(e) => setComfirm(e.target.value)}
-                className="w-full h-10 p-2 my-2 bg-white border rounded-md border-gray-300
+            >
+              Xác nhận mật khẩu: {passwordsMatch ? "" : "Chưa đúng"}
+            </label>
+            <input
+              id="confirm-password"
+              type="password"
+              placeholder="Nhập xác nhận mật khẩu"
+              required
+              value={confirm}
+              onChange={(e) => setComfirm(e.target.value)}
+              className="w-full h-10 p-2 my-2 bg-white border rounded-md border-gray-300
         focus:border-green-500 focus:outline-none transition duration-300 ease-in-out"
-              />
+            />
 
-              <div className="flex justify-center">
-                <button
-                  type="submit"
-                  disabled={!isConfirm || isLoading}
-                  className={`w-40 h-10 p-2 my-2 font-bold text-white bg-blue-500 border rounded-md
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                disabled={!isConfirm || isLoading}
+                className={`w-40 h-10 p-2 my-2 font-bold text-white bg-blue-500 border rounded-md
                  border-blue-500 transition duration-300 ease-in-out transform
                   ${
                     !isConfirm || isLoading
                       ? "cursor-not-allowed"
                       : "hover:scale-105 hover:bg-yellow-500 hover:text-black"
                   }`}
-                >
-                  Đăng Ký
-                </button>
-              </div>
-              <p className="mt-2 text-gray-600 text-center">
-                Bạn đã có tài khoản?{" "}
-                <Link to="/login" className="text-blue-500 ">
-                  Đăng Nhập
-                </Link>
-              </p>
-            </form>
-          </div>
+              >
+                Đăng Ký
+              </button>
+            </div>
+            <p className="mt-2 text-gray-600 text-center">
+              Bạn đã có tài khoản?{" "}
+              <Link to="/login" className="text-blue-500 ">
+                Đăng Nhập
+              </Link>
+            </p>
+          </form>
         </div>
-      </>
-    )
+      </div>
+    </>
   );
 };
 
