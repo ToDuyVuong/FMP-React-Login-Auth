@@ -51,9 +51,6 @@ const Home = () => {
     setIsLoading(true);
     setTimeout(async () => {
       const response = await refreshToken();
-      console.log("aa2: ", loginMessage);
-
-      console.log("response: ", response);
       if (!response.code === 0) {
         setIsLoading(false);
         dispatch(logoutSuccess());

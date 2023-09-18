@@ -36,7 +36,6 @@ const Register = () => {
     try {
       const response = await register({ email, fullName, password }).unwrap();
       console.log(response);
-      console.log("response", response.data.email);
 
       dispatch(
         setMessage({
