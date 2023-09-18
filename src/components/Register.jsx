@@ -39,7 +39,7 @@ const Register = () => {
 
       dispatch(
         setMessage({
-          message: response.message,
+          message: "Đăng ký người dùng mới thành công.",
           email: response.data.email,
         })
       );
@@ -99,7 +99,7 @@ const Register = () => {
             Đăng Ký
           </h1>
 
-          {er && <h3 className="mb-4 text-center text-red-500">===== {er}</h3>}
+          {er && <h3 className="mb-4 text-center text-red-500">{er}</h3>}
 
           <Modal
             isOpen={showModal}

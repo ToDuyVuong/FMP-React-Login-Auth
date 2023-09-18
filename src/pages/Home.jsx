@@ -55,6 +55,7 @@ const Home = () => {
         setIsLoading(false);
         dispatch(logoutSuccess());
       }
+      console.log(response);
     }, 1000);
     setIsLoading(false);
   };
@@ -63,7 +64,7 @@ const Home = () => {
     if (isAuthenticated) {
       if (loginMessage) {
         showLoginMessage(loginMessage);
-        dispatch(setMessage(""));   
+        dispatch(setMessage(""));
       } else {
         handleBeforeUnload();
       }
@@ -75,7 +76,7 @@ const Home = () => {
     setIsLoading(true);
     setMessageHome("");
     const response = await callAPITest(token);
-    // console.log("response: ", response);
+    console.log("response: ", response);
     if (response.code === 200) {
       setIsLoading(false);
       setMessageHome(response.message);
