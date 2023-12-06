@@ -5,7 +5,7 @@ import { useToken } from "../hook/useToken";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { logoutSuccess, setMessage } from "../redux/reducers/authReducer";
-
+import { useJwt } from "react-jwt";
 import { useNavigate } from "react-router-dom";
 import { useDataUser } from "./../hook/useDataUser";
 import { useCallAPITest } from "../hook/useCallAPITest";
@@ -33,7 +33,7 @@ const Home = () => {
     title: "",
     content: "",
   });
-
+  const { decodedToken, isExpired } = useJwt(token);
   const openModal = (title, content) => {
     setModalContent({ title, content });
     setShowModal(true);
@@ -75,12 +75,21 @@ const Home = () => {
     e.preventDefault();
     setIsLoading(true);
     setMessageHome("");
-    const response = await callAPITest(token);
-    console.log("response: ", response);
-    if (response.code === 200) {
-      setIsLoading(false);
-      setMessageHome(response.message);
+      // const { decodedToken, isExpired } = useJwt(token);
+    if (!isExpired) {
+      console.log("isExpired còn hạn: ", isExpired);
+      const response = await callAPITest(token);
+      console.log("response: ", response);
+      if (response.code === 200) {
+        setIsLoading(false);
+        setMessageHome(response.message);
+      } else {
+        dispatch(logoutSuccess());
+        navigate("/login");
+      }
     } else {
+      console.log("isExpired hết hạn: ", isExpired);
+
       const responseRefresh = await refreshAccessToken();
       // console.log("responseRefresh: ", responseRefresh);
       if (responseRefresh.code === 0) {
@@ -104,6 +113,8 @@ const Home = () => {
       const response = await logout(token).unwrap();
       // console.log("logout: ", response);
       dispatch(logoutSuccess());
+      // console.log("a: ", response, " b ", token);
+
       navigate("/login");
     } catch (error) {
       dispatch(logoutSuccess());

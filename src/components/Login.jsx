@@ -10,6 +10,7 @@ import { loginSuccess, setMessage } from "../redux/reducers/authReducer";
 import { useSetMessage } from "../hook/useSetMessage";
 import { useEmailRegister } from "../hook/useEmailRegister";
 import Modal from "./Modal";
+import { useToken } from "../hook/useToken";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -22,6 +23,7 @@ const Login = () => {
   const isAuthenticated = useAuthentication();
   const setMessageRegister = useSetMessage();
   const emailRigister = useEmailRegister();
+  const token = useToken();
 
   const [login, { isLoading }] = useLoginMutation();
   const [showModal, setShowModal] = useState(false);
@@ -59,6 +61,8 @@ const Login = () => {
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/");
+    } else {
+      console.log("a: ", token);
     }
   }, []);
 
